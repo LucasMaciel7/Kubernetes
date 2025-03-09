@@ -45,11 +45,7 @@ Isso permitiu a camada de microserviços ficarem cada vez mais desacoplados, dis
 
 # Arquitetura Kubernetes
 
-![alt text](image.png)
-
-
-
-
+![alt text](/img/arquitetura.png)
 
 ## Control Plane
 Quando se contrata serviços de kubernetes sem clouds EKS, AKS, GKS não temos acesso ao control plane por se tratar de algo extremamente complicado de se gerenciar. Serviços da AWS como exemplo gerencia o control PLane para nós afim de que nós clientes coloque somente nossas operações para rodar. 
