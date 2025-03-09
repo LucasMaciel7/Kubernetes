@@ -1,4 +1,4 @@
-# Kubernets
+# Kubernetes
 
 ## Oque é Kubernetes ? 
 
