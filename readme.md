@@ -75,7 +75,7 @@ Quando se contrata serviços de kubernetes sem clouds EKS, AKS, GKS não temos a
 
 ## Data Planing
 
-![alt text](img/contexto2.png.png)
+![alt text](img/contexto2.png)
 
 Local onde nossas aplicações irá rodar, geralmente ao se ultilizar ambientes public cloud é a aréa a qual temos acesso. Pois é onde nossa aplicação irá rodar, toda solução em nuvem fica responsavel de gerenciar para você o control plane.
 
