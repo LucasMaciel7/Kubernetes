@@ -6,7 +6,7 @@ Conhecido de maneira abreviada por k8S, é uma solução open source ultilizada 
 
 Criado pela *Google* em 2014, reapidamente se tornou uma ferramenta poderosa no mundo de *Devops*, permitindo entregar eficiente de aplicações em contêiners. Ele tambem permite executar arquiteturas de diversos tipos de teclonogia tendo o poder de  inicialas com zero downtime. Por exemplo, se um de seus containers vem a cair, podemos programar um failover para que suba um outro container com 0 downtime.
 
-## Ambientes de usuabilidade
+## Ambientes de usabilidade
 
 - Serviço de descoberta e Load balancing
     O Kubernets pode expor containers usando o DNS ou usando, ou usando seu proprio IP. Se o Trafego de requisições de um container subir, o Kubernets é capaz de balancear a carga das requisições de forma eficiente. Garantindo um *melhor desempenho* e alta disponibilidade. Além disso, pode iniciar contêineres automaticamente caso necessário. 
