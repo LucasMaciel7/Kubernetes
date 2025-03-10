@@ -1,6 +1,6 @@
 # Kubernetes
 
-## Oque é Kubernetes ? 
+![alt text](/img/oqueekubernetes.png)
 
 Conhecido de maneira abreviada por k8S, é uma solução open source ultilizada para automatizar e simplificar todo o processo de gerenciamento de containers linux.
 
@@ -299,5 +299,193 @@ Como esta no nosso arquivo de configuração, temos três workers nodes e um con
 
 
 
+# Criar um POD
+
+Comando para criar uma POD
+
+```bash
+kubectl run --image nginx nginx
+```
+Nginx se repete duas vezes sendo o primerio o nomde da imagem docker e outro o nome da Pod. Ao executar este comando, ele Baixa a imagem docker, cria a pod e aloca em um node./n 
+
+para ver as Pod criadas basta
+
+```bash
+kubectl get pod
+```
+
+Veremos nosso nginx rodando
+
+```bash
+NAME    READY   STATUS    RESTARTS   AGE
+nginx   1/1     Running   0          3m10s
+```
+
+Para ver mais informações sobre essa pod podemos dar o comando:
+
+```bash
+kubectl get pod -owide
+```
+
+Conseguimos ver qual o ip deste container e em qual node esta rodando
+
+```bash
+NAME    READY   STATUS    RESTARTS   AGE     IP           NODE           NOMINATED NODE   READINESS GATES
+nginx   1/1     Running   0          4m56s   10.244.2.2   kind-worker2   <none>           <none>
+```
+
+Bom isso foi somente um teste para demonstrar como a ferramenta funciona, em cenários de produção temos pods criadas através de arquivos yaml, pois podem ser melhores gerenciados.<br>
+
+Exemplo de POD para o nginx
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+```
+
+Para subir este cenário com yaml, vamos primeiro deletar a pod que tinhamos feito anteriormente.
+
+```bash
+kubectl delete pod nginx
+```
+
+Depois de ter criado o arquivo .yaml basta subirmos ele com o comando.
+
+```bash
+kubectl apply -f pod.yaml
+```
+
+# Deployment
+Deplyoment é um recurso do Kubernetes que gerencia e controla a criação de pods. Garante que um conjunto de replicas de um aplicativo esteja sempre rodando, aplicando escalabilidade e rollbacks e atualizações sem downtime. Então como exemplo, caso venha a queda de uma POD ele faz o failover subindo uma replica no lugar.
+
+Para dar como exemplo, vamos deletar novamente a POD que tinhamos criado do nginx. 
+
+```bash
+kubectl delete pod nginx
+```
+
+Vamos rodar o coacomando mndo para criar o deployment
+
+```bash
+kubectl create deployment --image nginx nginx
+```
+
+Verficiar se criou
+
+```bash
+kubectl get deployment  
+```
+output
+```bash
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+nginx   1/1     1            1           70s
+```
 
 
+Ao criar um deplyment ele tambem cria um replicaset 
+
+```bash
+kubectl get replicaset
+```
+
+output:
+```bash
+NAME               DESIRED   CURRENT   READY   AGE
+nginx-5869d7778c   1         1         1       3m25s
+```
+
+e este replicaset cria um pod
+
+```bash
+kubectl get pod
+```
+Veja nosssas pods criadas 
+
+```bash
+Kubernets …
+➜ kubectl get pod                              
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-5869d7778c-f2xpd   1/1     Running   0          10m
+```
+Vemos nossa pod criada com um id de acordo com replicaset, se rodarmos um delete nessa pod oque será que acontece ? 
+
+```bash
+Kubernets …
+➜ kubectl delete pod nginx-5869d7778c-f2xpd     
+pod "nginx-5869d7778c-f2xpd" deleted
+```
+
+Até certo ponto não vamos ter nenhuma pod criada correto ? 
+
+ ```bash
+ Kubernets …
+➜ kubectl get pod                          
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-5869d7778c-j6s6m   1/1     Running   0          3s
+
+ ```
+
+A resposta é não, pois o replicaset indentificou o estado da POD e recriou aquela pod novamente, simplemente sozinho, isso já é uma disponibilidade automatica do kubernets e oque fizemos ? apenas criamos um deplyment.
+
+E se eu criar 10 replicas para suporta até 1000 rps ? 
+
+```bash
+kubectl scale deployment nginx --replicas 10
+```
+
+Se você for ver nosso replicaset
+
+```bash
+➜ kubectl get replicaset                      
+NAME               DESIRED   CURRENT   READY   AGE
+nginx-5869d7778c   10        10        10      19m
+```
+
+E nossas pods
+
+```bash
+➜ kubectl get pod
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-5869d7778c-6wc8l   1/1     Running   0          33s
+nginx-5869d7778c-7q5s6   1/1     Running   0          33s
+nginx-5869d7778c-9bf9b   1/1     Running   0          33s
+nginx-5869d7778c-bfpsf   1/1     Running   0          33s
+nginx-5869d7778c-dwx9g   1/1     Running   0          33s
+nginx-5869d7778c-j6s6m   1/1     Running   0          7m
+nginx-5869d7778c-rqwhs   1/1     Running   0          33s
+nginx-5869d7778c-svkmb   1/1     Running   0          33s
+nginx-5869d7778c-txvds   1/1     Running   0          33s
+nginx-5869d7778c-vpd4n   1/1     Running   0          33s
+ ```
+
+Você tambem consegue ver as pods replicadas em nodes diferentes, garantindo ainda mais estabilidade caso venha a queda de um node.
+```bash
+➜ kubectl get pod -owide
+NAME                     READY   STATUS    RESTARTS   AGE     IP           NODE           NOMINATED NODE   READINESS GATES
+nginx-5869d7778c-6wc8l   1/1     Running   0          3m12s   10.244.3.4   kind-worker3   <none>           <none>
+nginx-5869d7778c-7q5s6   1/1     Running   0          3m12s   10.244.3.3   kind-worker3   <none>           <none>
+nginx-5869d7778c-9bf9b   1/1     Running   0          3m12s   10.244.1.5   kind-worker    <none>           <none>
+nginx-5869d7778c-bfpsf   1/1     Running   0          3m12s   10.244.2.4   kind-worker2   <none>           <none>
+nginx-5869d7778c-dwx9g   1/1     Running   0          3m12s   10.244.1.4   kind-worker    <none>           <none>
+nginx-5869d7778c-j6s6m   1/1     Running   0          9m39s   10.244.1.3   kind-worker    <none>           <none>
+nginx-5869d7778c-rqwhs   1/1     Running   0          3m12s   10.244.3.5   kind-worker3   <none>           <none>
+nginx-5869d7778c-svkmb   1/1     Running   0          3m12s   10.244.2.5   kind-worker2   <none>           <none>
+nginx-5869d7778c-txvds   1/1     Running   0          3m12s   10.244.2.3   kind-worker2   <none>           <none>
+nginx-5869d7778c-vpd4n   1/1     Running   0          3m12s   10.244.3.6   kind-worker3   <none>           <none>
+```
+
+ Ele criou 10 pods do nginx para rodar em conjunto. Claro que não fariamos isso na mão, o kubernetes consegue monitorar o uso de CPU e requisições e fazer o auto scaling automaticamente. 
