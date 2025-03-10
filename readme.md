@@ -203,7 +203,7 @@ Kubernets took 48.1s …
 
 ```
 
-OQue o Kind basicamente fez foi criar os nodes através de uma imagem docker, um node por padrão é uma VM e dentro dessa VM rodas os nossos Pods que seria nossos containers docker. Oque o kind faz para fcailitar o processo de instalação é criar um container docker para os nodes e dentro destes nodes criarmos nossos pods em docker. Famoso doker in docker.
+OQue o Kind basicamente fez foi criar os nodes através de uma imagem docker, um node por padrão é uma VM e dentro dessa VM rodas os nossos Pods que seria nossos containers docker. Oque o kind faz para facilitar o processo de instalação é criar um container docker para os nodes e dentro destes nodes criarmos nossos pods em docker. Famoso docker in docker.
 
 
 Feito a criação do nosso cluster kubernetes, precisamos agora fazer a comunicação como nosso Cluster, que é feito através do Kubectl.
